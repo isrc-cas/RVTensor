@@ -6,6 +6,7 @@
  */
 
 #include "include/core/executor.hpp"
+#include "include/core/tensor.hpp"
 
 namespace rvos {
 
@@ -21,15 +22,11 @@ Executor::sptr Executor::create(std::string model_name, int input_height,
                                       thread_num);
 }
 
-Executor::Executor() {
-    return;
-}
+Executor::Executor() {}
 
 Executor::Executor(std::string model_name, int input_height,
                    int input_width, int thread_num) : thread_num_(thread_num),
-                  model_name_(model_name) {
-    return;
-}
+                   model_name_(model_name) {}
 
 int Executor::analysisModel() {
     return 0;

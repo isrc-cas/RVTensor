@@ -11,7 +11,7 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "include/core/mat.hpp"
+#include "include/core/tensor.hpp"
 
 namespace rvos {
 
@@ -93,7 +93,7 @@ class Executor {
     /// thread num
     int thread_num_;
     /// image struct
-    Mat input_image_;
+    Tensor::sptr image_ptr;
     /// pointor to graph vector
     // std::vector<Graph::ptr> graphs_ptr_;
     /// model_name
