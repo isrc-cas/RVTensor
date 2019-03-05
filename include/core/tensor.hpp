@@ -102,7 +102,7 @@ class Tensor {
       * 0 = empty
       */
      size_t element_size;
-    
+
      /**
       * dimension of the Tensor
       */
@@ -140,15 +140,15 @@ class FlashTensor : public Tensor {
      /**
       * get const data reference
       */
-     const FlashTensor grep_channel(int c) const;
+     const FlashTensor::sptr grep_channel(int c) const;
      template<typename T> const T* grep_row(int y) const;
 
      /**
       * get const range reference
       */
-     const FlashTensor grep_channel_range(int c, int channels) const;
-     const FlashTensor grep_row_range(int y, int rows) const;
-     const FlashTensor grep_range(int x, int n) const;
+     const FlashTensor::sptr grep_channel_range(int c, int channels) const;
+     const FlashTensor::sptr grep_row_range(int y, int rows) const;
+     const FlashTensor::sptr grep_range(int x, int n) const;
 
      /**
       * access const raw data
@@ -189,15 +189,15 @@ class RamTensor : public Tensor {
      /**
       * get data reference
       */
-     RamTensor grep_channel(int c);
+     RamTensor::sptr grep_channel(int c);
      template<typename T> T* grep_row(int y);
 
      /**
       * get range reference
       */
-     RamTensor grep_channel_range(int c, int channels);
-     RamTensor grep_row_range(int y, int rows);
-     RamTensor grep_range(int x, int n);
+     RamTensor::sptr grep_channel_range(int c, int channels);
+     RamTensor::sptr grep_row_range(int y, int rows);
+     RamTensor::sptr grep_range(int x, int n);
 
      /**
       * access raw data
@@ -208,9 +208,8 @@ class RamTensor : public Tensor {
      /**
       *  interface of create&release malloced data
       */
-     void create_resourse(int w, int h, int c, size_t elemsize);
-     void release_resourse();
- 
+     void create_resource(int w, int h, int c, size_t elemsize);
+     void release_resource();
      /**
       *  memory malloc&free for data_ptr
       */

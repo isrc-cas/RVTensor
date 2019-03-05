@@ -32,8 +32,9 @@ inline Tensor::Tensor(int w, int h, int c, size_t elemsize)
 inline Tensor::Tensor(int w, int h, int c, void* data, size_t elemsize)
     : data_ptr(data), reference_count(nullptr), element_size(elemsize),
       weight(w), height(h), channel(c) {
-    cstep = alignSize(weight * height * element_size,
-                                          MALLOC_ALIGN) / element_size;
+    cstep = (channel <= 1) ? weight * height :
+                             alignSize(weight * height * element_size,
+                                       MALLOC_ALIGN) / element_size;
 }
 
 inline Tensor::~Tensor() {
@@ -118,9 +119,9 @@ inline void FlashTensor::bindData(void* data, size_t size) {
     // else report wrong msg
 }
 
-inline const FlashTensor FlashTensor::grep_channel(int _c) const {
+inline const FlashTensor::sptr FlashTensor::grep_channel(int _c) const {
     int c = 1;
-    return FlashTensor(weight, height, c, (unsigned char*)data_ptr +
+    return create(weight, height, c, (unsigned char*)data_ptr +
                        cstep * _c * element_size, element_size);
 }
 
@@ -129,23 +130,24 @@ inline const T* FlashTensor::grep_row(int y) const {
     return (const T*)data_ptr + weight * y;
 }
 
-inline const FlashTensor FlashTensor::grep_channel_range(
+inline const FlashTensor::sptr FlashTensor::grep_channel_range(
                                       int c, int channels) const {
-    return FlashTensor(weight, height, channels,
+    return create(weight, height, channels,
              (unsigned char*)data_ptr + cstep * c * element_size, element_size);
 }
 
-inline const FlashTensor FlashTensor::grep_row_range(int y, int rows) const {
+inline const FlashTensor::sptr FlashTensor::grep_row_range(
+                                          int y, int rows) const {
     int c = 1;
-    return FlashTensor(weight, rows, c,
+    return create(weight, rows, c,
             (unsigned char*)data_ptr + weight * y * element_size, element_size);
 }
 
-inline const FlashTensor FlashTensor::grep_range(int x, int n) const {
+inline const FlashTensor::sptr FlashTensor::grep_range(int x, int n) const {
     int h = 1;
     int c = 1;
-    return FlashTensor(n, h, c,
-                     (unsigned char*)data_ptr + x * element_size, element_size);
+    return create(n, h, c,
+                  (unsigned char*)data_ptr + x * element_size, element_size);
 }
 
 template <typename T>
@@ -172,14 +174,14 @@ inline RamTensor::RamTensor() : Tensor() {}
 
 inline RamTensor::RamTensor(int w, int h, int c, size_t elemsize)
                    : Tensor(w, h, c, elemsize) {
-    create_resourse(w, h, c, elemsize);
+    create_resource(w, h, c, elemsize);
 }
 
 inline RamTensor::RamTensor(int w, int h, int c, void* data, size_t elemsize)
                    : Tensor(w, h, c, data, elemsize) {}
 
 inline RamTensor::~RamTensor() {
-    release_resourse();
+    release_resource();
 }
 
 template <typename T>
@@ -229,9 +231,9 @@ void RamTensor::writeData(void* data, size_t size) {
     // else report wrong msg
 }
 
-inline RamTensor RamTensor::grep_channel(int _c) {
+inline RamTensor::sptr RamTensor::grep_channel(int _c) {
     int c = 1;
-    return RamTensor(weight, height, c, (unsigned char*)data_ptr +
+    return create(weight, height, c, (unsigned char*)data_ptr +
                      cstep * _c * element_size, element_size);
 }
 
@@ -240,22 +242,22 @@ inline T* RamTensor::grep_row(int y) {
     return reinterpret_cast<T*>(data_ptr) + weight * y;
 }
 
-inline RamTensor RamTensor::grep_channel_range(int _c, int channels) {
-    return RamTensor(weight, height, channels,
+inline RamTensor::sptr RamTensor::grep_channel_range(int _c, int channels) {
+    return create(weight, height, channels,
             (unsigned char*)data_ptr + cstep * _c * element_size, element_size);
 }
 
-inline RamTensor RamTensor::grep_row_range(int y, int rows) {
+inline RamTensor::sptr RamTensor::grep_row_range(int y, int rows) {
     int c = 1;
-    return RamTensor(weight, rows, c,
+    return create(weight, rows, c,
             (unsigned char*)data_ptr + weight * y * element_size, element_size);
 }
 
-inline RamTensor RamTensor::grep_range(int x, int n) {
+inline RamTensor::sptr RamTensor::grep_range(int x, int n) {
     int h = 1;
     int c = 1;
-    return RamTensor(n, h, c,
-                     (unsigned char*)data_ptr + x * element_size, element_size);
+    return create(n, h, c,
+                  (unsigned char*)data_ptr + x * element_size, element_size);
 }
 
 template <typename T>
@@ -263,20 +265,10 @@ inline RamTensor::operator T*() {
     return reinterpret_cast<T*>(data_ptr);
 }
 
-inline void RamTensor::create_resourse(int w, int h, int c, size_t elemsize) {
-    if (weight == w && height == h && channel == c && element_size == elemsize)
-        return;
-
-    release();
-
-    element_size = elemsize;
-
-    weight = w;
-    height = h;
-    channel = c;
-
-    cstep = alignSize(weight * height * element_size,
-                                              MALLOC_ALIGN) / element_size;
+inline void RamTensor::create_resource(int w, int h, int c, size_t elemsize) {
+    cstep = (c == 1) ? weight * height :
+                     alignSize(weight * height * element_size,
+                               MALLOC_ALIGN) / element_size;
 
     if (total() > 0) {
         size_t totalsize = alignSize(total() * elemsize, 4);
@@ -287,7 +279,7 @@ inline void RamTensor::create_resourse(int w, int h, int c, size_t elemsize) {
     }
 }
 
-inline void RamTensor::release_resourse() {
+inline void RamTensor::release_resource() {
     if (reference_count && (--(*reference_count)) == 1) {
         tensorDataFree(data_ptr);
     }
