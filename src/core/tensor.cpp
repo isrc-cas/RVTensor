@@ -14,24 +14,28 @@ Tensor::sptr Tensor::create() {
     return std::make_shared<Tensor>();
 }
 
-Tensor::sptr Tensor::create(int w, int h, int c, size_t elemsize) {
-    return std::make_shared<Tensor>(w, h, c, elemsize);
+Tensor::sptr Tensor::create(int w, int h,
+                            int c, size_t elemsize, int refcount) {
+    return std::make_shared<Tensor>(w, h, c, elemsize, refcount);
 }
 
-Tensor::sptr Tensor::create(int w, int h, int c, void* data, size_t elemsize) {
-    return std::make_shared<Tensor>(w, h, c, data, elemsize);
+Tensor::sptr Tensor::create(int w, int h,
+                            int c, void* data, size_t elemsize, int refcount) {
+    return std::make_shared<Tensor>(w, h, c, data, elemsize, refcount);
 }
 
-inline Tensor::Tensor() : data_ptr(nullptr), reference_count(nullptr),
+inline Tensor::Tensor() : data_ptr(nullptr), reference_count(0),
                           element_size(0), weight(0), height(0), channel(0),
-                          cstep(0) {}
+                          cstep(0), is_static(false) {}
 
-inline Tensor::Tensor(int w, int h, int c, size_t elemsize)
-                        : data_ptr(nullptr), reference_count(nullptr) {}
+inline Tensor::Tensor(int w, int h, int c, size_t elemsize, int refcount)
+                        : data_ptr(nullptr),
+                          reference_count(refcount), is_static(false) {}
 
-inline Tensor::Tensor(int w, int h, int c, void* data, size_t elemsize)
-    : data_ptr(data), reference_count(nullptr), element_size(elemsize),
-      weight(w), height(h), channel(c) {
+inline Tensor::Tensor(int w, int h, int c,
+                      void* data, size_t elemsize, int refcount)
+    : data_ptr(data), reference_count(refcount), element_size(elemsize),
+      weight(w), height(h), channel(c), is_static(false) {
     cstep = (channel <= 1) ? weight * height :
                              alignSize(weight * height * element_size,
                                        MALLOC_ALIGN) / element_size;
@@ -41,31 +45,18 @@ inline Tensor::~Tensor() {
     release();
 }
 
-inline Tensor& Tensor::operator=(const Tensor& m) {
-    if (this == &m)
-        return *this;
-
-    if (m.reference_count)
-        (*(m.reference_count))++;
-
-    release();
-
-    data_ptr = m.data_ptr;
-    reference_count = m.reference_count;
-    element_size = m.element_size;
-
-    weight = m.weight;
-    height = m.height;
-    channel = m.channel;
-
-    cstep = m.cstep;
-
-    return *this;
+inline int Tensor::increaseReference() {
+    if (is_static == false)
+        return ++reference_count;
+    else
+        return 0;
 }
 
-inline void Tensor::addReference() {
-    if (reference_count)
-        (*reference_count)++;
+inline int Tensor::decreaseReference() {
+    if (is_static == false)
+        return --reference_count;
+    else
+        return 0;
 }
 
 inline void Tensor::release() {
@@ -75,7 +66,8 @@ inline void Tensor::release() {
     height = 0;
     channel = 0;
     cstep = 0;
-    reference_count = nullptr;
+    reference_count = 0;
+    is_static = false;
 }
 
 inline bool Tensor::empty() const {
@@ -91,23 +83,31 @@ FlashTensor::sptr FlashTensor::create() {
     return std::make_shared<FlashTensor>();
 }
 
-FlashTensor::sptr FlashTensor::create(int w, int h, int c, size_t elemsize) {
-    return std::make_shared<FlashTensor>(w, h, c, elemsize);
+FlashTensor::sptr FlashTensor::create(int w, int h, int c,
+                                      size_t elemsize, int refcount) {
+    FlashTensor::sptr shared_ptr = std::make_shared<FlashTensor>(w, h, c,
+                                                      elemsize, refcount);
+    shared_ptr->is_static = true;
+    return shared_ptr;
 }
 
-FlashTensor::sptr FlashTensor::create(int w, int h, int c,
-                                      void* data, size_t elemsize) {
-    return std::make_shared<FlashTensor>(w, h, c, data, elemsize);
+FlashTensor::sptr FlashTensor::create(int w, int h, int c, void* data,
+                                      size_t elemsize, int refcount) {
+    FlashTensor::sptr shared_ptr = std::make_shared<FlashTensor>(
+                                       w, h, c, data, elemsize, refcount);
+    shared_ptr->is_static = true;
+    return shared_ptr;
 }
 
 inline FlashTensor::FlashTensor() : Tensor() {}
 
-inline FlashTensor::FlashTensor(int w, int h, int c, size_t elemsize)
-                   : Tensor(w, h, c, elemsize) {}
+inline FlashTensor::FlashTensor(int w, int h, int c,
+                                size_t elemsize, int refcount)
+                   : Tensor(w, h, c, elemsize, refcount) {}
 
 inline FlashTensor::FlashTensor(int w, int h, int c,
-                                void* data, size_t elemsize)
-                   : Tensor(w, h, c, data, elemsize) {}
+                                void* data, size_t elemsize, int refcount)
+                   : Tensor(w, h, c, data, elemsize, refcount) {}
 
 inline FlashTensor::~FlashTensor() {
     data_ptr = nullptr;
@@ -160,25 +160,27 @@ RamTensor::sptr RamTensor::create() {
     return std::make_shared<RamTensor>();
 }
 
-RamTensor::sptr RamTensor::create(int w, int h, int c, size_t elemsize) {
-    return std::make_shared<RamTensor>(w, h, c, elemsize);
+RamTensor::sptr RamTensor::create(int w, int h, int c, size_t elemsize,
+                                  int refcount) {
+    return std::make_shared<RamTensor>(w, h, c, elemsize, refcount);
 }
 
 RamTensor::sptr RamTensor::create(int w, int h, int c,
-                                  void* data, size_t elemsize) {
-    return std::make_shared<RamTensor>(w, h, c, data, elemsize);
+                                  void* data, size_t elemsize, int refcount) {
+    return std::make_shared<RamTensor>(w, h, c, data, elemsize, refcount);
 }
 
 
 inline RamTensor::RamTensor() : Tensor() {}
 
-inline RamTensor::RamTensor(int w, int h, int c, size_t elemsize)
-                   : Tensor(w, h, c, elemsize) {
+inline RamTensor::RamTensor(int w, int h, int c, size_t elemsize, int refcount)
+                   : Tensor(w, h, c, elemsize, refcount) {
     createResource(w, h, c, elemsize);
 }
 
-inline RamTensor::RamTensor(int w, int h, int c, void* data, size_t elemsize)
-                   : Tensor(w, h, c, data, elemsize) {}
+inline RamTensor::RamTensor(int w, int h, int c, void* data, size_t elemsize,
+                            int refcount)
+                   : Tensor(w, h, c, data, elemsize, refcount) {}
 
 inline RamTensor::~RamTensor() {
     releaseResource();
@@ -198,7 +200,7 @@ inline RamTensor::sptr RamTensor::clone() const {
         return create();
 
     RamTensor::sptr ts = std::make_shared<RamTensor>(
-                        weight, height, channel, element_size);
+                        weight, height, channel, element_size, reference_count);
 
     if (total() > 0) {
         memcpy(ts->data_ptr, data_ptr, total() * element_size);
@@ -234,7 +236,7 @@ void RamTensor::writeData(void* data, size_t size) {
 inline RamTensor::sptr RamTensor::grepChannel(int _c) {
     int c = 1;
     return create(weight, height, c, (unsigned char*)data_ptr +
-                     cstep * _c * element_size, element_size);
+                  cstep * _c * element_size, element_size, increaseReference());
 }
 
 template <typename T>
@@ -243,21 +245,21 @@ inline T* RamTensor::grepRow(int y) {
 }
 
 inline RamTensor::sptr RamTensor::grepChannelRange(int _c, int channels) {
-    return create(weight, height, channels,
-            (unsigned char*)data_ptr + cstep * _c * element_size, element_size);
+    return create(weight, height, channels, (unsigned char*)data_ptr +
+                  cstep * _c * element_size, element_size, increaseReference());
 }
 
 inline RamTensor::sptr RamTensor::grepRowRange(int y, int rows) {
     int c = 1;
-    return create(weight, rows, c,
-            (unsigned char*)data_ptr + weight * y * element_size, element_size);
+    return create(weight, rows, c, (unsigned char*)data_ptr +
+                  weight * y * element_size, element_size, increaseReference());
 }
 
 inline RamTensor::sptr RamTensor::grepRange(int x, int n) {
     int h = 1;
     int c = 1;
-    return create(n, h, c,
-                  (unsigned char*)data_ptr + x * element_size, element_size);
+    return create(n, h, c, (unsigned char*)data_ptr + x * element_size,
+                  element_size, increaseReference());
 }
 
 template <typename T>
@@ -266,21 +268,18 @@ inline RamTensor::operator T*() {
 }
 
 inline void RamTensor::createResource(int w, int h, int c, size_t elemsize) {
-    cstep = (c == 1) ? weight * height :
+    cstep = (c <= 1) ? weight * height :
                      alignSize(weight * height * element_size,
                                MALLOC_ALIGN) / element_size;
 
     if (total() > 0) {
         size_t totalsize = alignSize(total() * elemsize, 4);
-        data_ptr = tensorDataMalloc(totalsize + sizeof(*reference_count));
-        reference_count = reinterpret_cast<int*>(
-                                  ((unsigned char*)data_ptr) + totalsize);
-        *reference_count = 1;
+        data_ptr = tensorDataMalloc(totalsize);
     }
 }
 
 inline void RamTensor::releaseResource() {
-    if (reference_count && (--(*reference_count)) == 1) {
+    if (decreaseReference() == 0) {
         tensorDataFree(data_ptr);
     }
 }

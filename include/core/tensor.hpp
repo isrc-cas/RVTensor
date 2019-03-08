@@ -35,7 +35,7 @@ template<typename _Tp> static inline _Tp* alignPtr(
 }
 
 /**
- * RVOS data descriptor 
+ * RVOS data descriptor
  *
  *                 Tensor
  *                   +
@@ -44,7 +44,7 @@ template<typename _Tp> static inline _Tp* alignPtr(
  *       |                       |
  *       v                       v
  *  FlashTensor               RamTensor
- * 
+ *
  * FlashTensor describes model data which is already loaded in flash.
  * RamTensor describes dynamic memory data.
  *
@@ -53,24 +53,28 @@ class Tensor {
  public:
      using sptr = std::shared_ptr<Tensor>;
      static sptr create();
-     static sptr create(int w, int h, int c, size_t elemsize = 4u);
-     static sptr create(int w, int h, int c, void* data, size_t elemsize);
+     static sptr create(int w, int h, int c, size_t elemsize = 4u,
+                        int refcount = 0);
+     static sptr create(int w, int h, int c, void* data, size_t elemsize = 4u,
+                        int refcount = 0);
 
      /**
       * Constructor & Deconstructor
       */
      Tensor();
-     Tensor(int w, int h, int c, size_t elemsize = 4u);
-     Tensor(int w, int h, int c, void* data, size_t elemsize = 4u);
+     Tensor(int w, int h, int c, size_t elemsize = 4u, int refcount = 0);
+     Tensor(int w, int h, int c, void* data,
+            size_t elemsize = 4u, int refcount = 0);
      ~Tensor();
      Tensor& operator=(const Tensor& m);
 
      /**
-      * refcount++
+      * refcount operation
       */
-     void addReference();
+     int increaseReference();
+     int decreaseReference();
      /**
-      * refcount--
+      * releae
       */
      void release();
 
@@ -79,7 +83,7 @@ class Tensor {
       */
      bool empty() const;
      /**
-      * Number of the elements in Tensor 
+      * Number of the elements in Tensor
       */
      size_t total() const;
 
@@ -89,10 +93,10 @@ class Tensor {
      void* data_ptr;
 
      /**
-      * pointer to the reference counter
-      * when points to user-allocated data, the pointer is nullptr
+      * reference counter
       */
-     int* reference_count;
+     int reference_count;
+     bool is_static;
 
      /**
       * element size in bytes
@@ -120,15 +124,18 @@ class FlashTensor : public Tensor {
  public:
      using sptr = std::shared_ptr<FlashTensor>;
      static sptr create();
-     static sptr create(int w, int h, int c, size_t elemsize = 4u);
-     static sptr create(int w, int h, int c, void* data, size_t elemsize);
+     static sptr create(int w, int h, int c, size_t elemsize = 4u,
+                        int refcount = 0);
+     static sptr create(int w, int h, int c, void* data, size_t elemsize = 4u,
+                        int refcount = 0);
 
      /**
       * Constructor & Deconstructor
       */
      FlashTensor();
-     FlashTensor(int w, int h, int c, size_t elemsize = 4u);
-     FlashTensor(int w, int h, int c, void* data, size_t elemsize = 4u);
+     FlashTensor(int w, int h, int c, size_t elemsize = 4u, int refcount = 0);
+     FlashTensor(int w, int h, int c, void* data,
+                 size_t elemsize = 4u, int refcount = 0);
      ~FlashTensor();
      FlashTensor& operator=(const FlashTensor& m);
 
@@ -160,15 +167,17 @@ class RamTensor : public Tensor {
  public:
      using sptr = std::shared_ptr<RamTensor>;
      static sptr create();
-     static sptr create(int w, int h, int c, size_t elemsize = 4u);
-     static sptr create(int w, int h, int c, void* data, size_t elemsize);
+     static sptr create(int w, int h, int c, size_t elemsize = 4u,
+                        int refcount = 0);
+     static sptr create(int w, int h, int c, void* data, size_t elemsize = 4u,
+                        int refcount = 0);
 
      /**
       * Constructor & Deconstructor
       */
      RamTensor();
-     RamTensor(int w, int h, int c, size_t elemsize = 4u);
-     RamTensor(int w, int h, int c, void* data, size_t elemsize = 4u);
+     RamTensor(int w, int h, int c, size_t elemsize, int refcount);
+     RamTensor(int w, int h, int c, void* data, size_t elemsize, int refcount);
      ~RamTensor();
      RamTensor& operator=(const RamTensor& m);
 
