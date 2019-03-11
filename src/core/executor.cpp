@@ -7,6 +7,7 @@
 
 #include "include/core/executor.hpp"
 #include "include/core/tensor.hpp"
+// #include "compiled/yolov3_model_execute.hpp"
 
 namespace rvos {
 
@@ -46,6 +47,7 @@ int Executor::copyData(void* host_buf, void* ai_base, uint64_t size,
 }
 
 int Executor::compute() {
+    // RamTensor::sptr output = yolov3_model_execute(image_ptr);
     return 0;
 }
 

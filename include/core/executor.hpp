@@ -93,7 +93,7 @@ class Executor {
     /// thread num
     int thread_num_;
     /// image struct
-    Tensor::sptr image_ptr;
+    RamTensor::sptr image_ptr;
     /// pointor to graph vector
     // std::vector<Graph::ptr> graphs_ptr_;
     /// model_name
