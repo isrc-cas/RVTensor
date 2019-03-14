@@ -64,6 +64,28 @@ inline size_t Tensor::total() const {
     return cstep * channel * n_batch;
 }
 
+inline size_t Tensor::count() const {
+    return n_batch * channel * height * width;
+}
+
+inline void Tensor::setQuantizeParams(
+               float min, float max, int64_t sc, float zero) {
+    min_range = min;
+    max_range = max;
+    scale = sc;
+    zero_point = zero;
+}
+
+inline void Tensor::setQuantizeRange(float min, float max) {
+    min_range = min;
+    max_range = max;
+}
+
+inline void Tensor::setQuantizer(int64_t sc, float zero) {
+    scale = sc;
+    zero_point = zero;
+}
+
 /////////////////// FlashTensor /////////////////////////////
 FlashTensor::sptr FlashTensor::create() {
     return std::make_shared<FlashTensor>();

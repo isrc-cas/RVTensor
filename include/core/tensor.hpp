@@ -70,9 +70,11 @@ class Tensor {
       * judage if Tensor is empty
       */
      bool empty() const;
+
      /**
       * Number of the elements in Tensor
       */
+     size_t count() const;
      size_t total() const;
 
      /**
@@ -101,6 +103,17 @@ class Tensor {
       * layout of the martrix(w, h)
       */
      size_t cstep;
+
+     /**
+      * quantize params and method
+      */
+     float min_range;
+     float max_range;
+     int64_t scale;
+     float zero_point;
+     void setQuantizeParams(float min, float max, int64_t sc, float zero);
+     void setQuantizeRange(float min, float max);
+     void setQuantizer(int64_t sc, float zero);
 };
 
 class FlashTensor : public Tensor {
