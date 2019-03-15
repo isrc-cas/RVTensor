@@ -12,15 +12,13 @@
 namespace rvos {
 
 Executor::sptr Executor::create() {
-    return std::make_shared<Executor>();
+  return std::make_shared<Executor>();
 }
 
 Executor::sptr Executor::create(std::string model_name, int input_height,
-                                       int input_width, int thread_num) {
-    return std::make_shared<Executor>(model_name,
-                                      input_height,
-                                      input_width,
-                                      thread_num);
+                                int input_width, int thread_num) {
+  return std::make_shared<Executor>(model_name, input_height,
+                                    input_width, thread_num);
 }
 
 Executor::Executor() {}
@@ -30,30 +28,30 @@ Executor::Executor(std::string model_name, int input_height,
                    model_name_(model_name) {}
 
 int Executor::analysisModel() {
-    return 0;
+  return 0;
 }
 
 void Executor::loadImage(uint8_t* ai_buf, int height, int width) {
-    return;
+  return;
 }
 
 void Executor::loadImage(std::string image_path, int height, int width) {
-    return;
+  return;
 }
 
 int Executor::copyData(void* host_buf, void* ai_base, uint64_t size,
-                       Direction_t dir) {
-    return 0;
+    Direction_t dir) {
+  return 0;
 }
 
 int Executor::compute() {
-    // RamTensor::sptr output = yolov3_model_execute(image_ptr);
-    return 0;
+  // RamTensor::sptr output = yolov3_model_execute(image_ptr);
+  return 0;
 }
 
 int Executor::inferenceResult(void* result_buf, uint64_t size,
-        callback_draw_box call) {
-    return 0;
+    callback_draw_box call) {
+  return 0;
 }
 
 Executor::~Executor() {}

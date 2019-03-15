@@ -28,39 +28,39 @@ namespace rvos {
  */
 class Operation {
  public:
-     using sptr = std::shared_ptr<Operation>;
-     static sptr create();
-     static sptr create(std::vector<RamTensor::sptr> inputs,
-                        std::vector<RamTensor::sptr> outputs);
+    using sptr = std::shared_ptr<Operation>;
+    static sptr create();
+    static sptr create(std::vector<RamTensor::sptr> inputs,
+                       std::vector<RamTensor::sptr> outputs);
 
-     /**
-      * Constructor & Deconstructor
-      */
-     Operation();
-     Operation(std::vector<RamTensor::sptr> inputs,
+    /**
+     * Constructor & Deconstructor
+     */
+    Operation();
+    Operation(std::vector<RamTensor::sptr> inputs,
               std::vector<RamTensor::sptr> outputs);
-     ~Operation();
-     Operation& operator=(const Operation& op);
+    ~Operation();
+    Operation& operator=(const Operation& op);
 
-     /**
-      * check output dims
-      */
-     virtual void checkOutputDims() {}
+    /**
+     * check output dims
+     */
+    virtual void checkOutputDims() {}
 
-     /**
-      * get inputs/outputs
-      */
-     std::vector<RamTensor::sptr> getInputs();
-     std::vector<RamTensor::sptr> getOutputs();
+    /**
+     * get inputs/outputs
+     */
+    std::vector<RamTensor::sptr> getInputs();
+    std::vector<RamTensor::sptr> getOutputs();
 
-     /**
-      * inference
-      */
-     virtual void forward_compute() {}
+    /**
+     * inference
+     */
+    virtual void forward_compute() {}
 
  private:
-     std::vector<RamTensor::sptr> inputs_;
-     std::vector<RamTensor::sptr> outputs_;
+    std::vector<RamTensor::sptr> inputs_;
+    std::vector<RamTensor::sptr> outputs_;
 };
 
 }  // namespace rvos
