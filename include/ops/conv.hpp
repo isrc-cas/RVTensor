@@ -12,22 +12,9 @@
 #include <memory>
 #include "include/core/tensor.hpp"
 #include "include/core/operation.hpp"
+#include "include/core/types.hpp"
 
 namespace rvos {
-
-struct ConvParam {
-  /// stride
-  int sw;
-  int sh;
-  /// dilated
-  int dw;
-  int dh;
-  /// add pad
-  int pw;
-  int ph;
-  /// quantization int8 or float
-  bool quantized;
-};
 
 class CPUConvOp: public Operation {
  public:
@@ -36,8 +23,8 @@ class CPUConvOp: public Operation {
     static sptr create(ConvParam conv_param,
         RamTensor::sptr input,
         RamTensor::sptr output,
-        RamTensor::sptr weight,
-        RamTensor::sptr bias = nullptr);
+        FlashTensor::sptr weight,
+        FlashTensor::sptr bias = nullptr);
 
     /**
      * Constructor & Deconstructor
@@ -46,8 +33,8 @@ class CPUConvOp: public Operation {
     CPUConvOp(ConvParam conv_param,
         RamTensor::sptr input,
         RamTensor::sptr output,
-        RamTensor::sptr weight,
-        RamTensor::sptr bias = nullptr);
+        FlashTensor::sptr weight,
+        FlashTensor::sptr bias = nullptr);
     ~CPUConvOp();
     CPUConvOp& operator=(const CPUConvOp& conv_op);
 
@@ -65,9 +52,9 @@ class CPUConvOp: public Operation {
     /// conv paramter
     ConvParam param_;
     /// model data: weight
-    RamTensor::sptr weight_;
+    FlashTensor::sptr weight_;
     /// model data: bias
-    RamTensor::sptr bias_;
+    FlashTensor::sptr bias_;
 };
 
 }  // namespace rvos

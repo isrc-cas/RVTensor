@@ -12,28 +12,9 @@
 #include <memory>
 #include "include/core/tensor.hpp"
 #include "include/core/operation.hpp"
+#include "include/core/types.hpp"
 
 namespace rvos {
-
-/// Quantizing deep convolutional networks for efficient inference: A whitepaper
-/// https://arxiv.org/abs/1806.08342
-enum QuantizeStrategy {
-  AFFINE_QUANTIZE_FLOAT32TOUINT8      = 0,  // [0 - 255]
-  AFFINE_QUANTIZE_FLOAT32TOUINT16     = 1,
-  SYMMETRIC_QUANTIZE_FLOAT32TOINT8    = 2,  // [-127, 127]
-  SYMMETRIC_QUANTIZE_FLOAT32TOINT16   = 3,
-  AFFINE_DEQUANTIZE_UINT8TOFLOAT32    = 4,
-  AFFINE_DEQUANTIZE_UINT16TOFLOAT32   = 5,
-  SYMMETRIC_DEQUANTIZE_INT8TOFLOAT32  = 6,
-  SYMMETRIC_DEQUANTIZE_INT16TOFLOAT32 = 7,
-  NONE                                = 8
-};
-
-struct QuantizeParam {
-  int input_elemsize;
-  int output_elemsize;
-  QuantizeStrategy quant_type;
-};
 
 class QuantizeOp: public Operation {
  public:

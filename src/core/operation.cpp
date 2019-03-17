@@ -18,19 +18,19 @@ Operation::sptr Operation::create(std::vector<RamTensor::sptr> inputs,
     return std::make_shared<Operation>(inputs, outputs);
 }
 
-inline Operation::Operation() : inputs_({}), outputs_({}) {}
+Operation::Operation() : inputs_({}), outputs_({}) {}
 
-inline Operation::Operation(std::vector<RamTensor::sptr> inputs,
-                            std::vector<RamTensor::sptr> outputs)
-                           : inputs_(inputs), outputs_(outputs) {}
+Operation::Operation(std::vector<RamTensor::sptr> inputs,
+                     std::vector<RamTensor::sptr> outputs)
+                    : inputs_(inputs), outputs_(outputs) {}
 
-inline Operation::~Operation() {}
+Operation::~Operation() {}
 
-inline std::vector<RamTensor::sptr> Operation::getInputs() {
+std::vector<RamTensor::sptr> Operation::getInputs() {
     return inputs_;
 }
 
-inline std::vector<RamTensor::sptr> Operation::getOutputs() {
+std::vector<RamTensor::sptr> Operation::getOutputs() {
     return outputs_;
 }
 

@@ -24,8 +24,8 @@ class KPUConvOp: public Operation {
     static sptr create(ConvParam conv_param,
         RamTensor::sptr input,
         RamTensor::sptr output,
-        RamTensor::sptr weight,
-        RamTensor::sptr bias = nullptr);
+        FlashTensor::sptr weight,
+        FlashTensor::sptr bias = nullptr);
 
     /**
      * Constructor & Deconstructor
@@ -34,8 +34,8 @@ class KPUConvOp: public Operation {
     KPUConvOp(ConvParam conv_param,
         RamTensor::sptr input,
         RamTensor::sptr output,
-        RamTensor::sptr weight,
-        RamTensor::sptr bias = nullptr);
+        FlashTensor::sptr weight,
+        FlashTensor::sptr bias = nullptr);
     ~KPUConvOp();
     KPUConvOp& operator=(const KPUConvOp& conv_op);
 
@@ -53,9 +53,9 @@ class KPUConvOp: public Operation {
     /// conv paramter
     ConvParam param_;
     /// model data: weight
-    RamTensor::sptr weight_;
+    FlashTensor::sptr weight_;
     /// model data: bias
-    RamTensor::sptr bias_;
+    FlashTensor::sptr bias_;
     /// kpu active table
     kpu_activate_table_t kpu_act_table __attribute__((aligned(256)));
 };

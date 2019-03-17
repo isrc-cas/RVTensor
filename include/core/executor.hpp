@@ -15,11 +15,6 @@
 
 namespace rvos {
 
-enum Direction_t{
-  HOST_TO_AI = 0,
-  AI_TO_HOST = 1,
-};
-
 typedef void (*callback_draw_box)(uint32_t x1, uint32_t y1, uint32_t x2,
     uint32_t y2, uint32_t classes, float prob);
 
@@ -41,11 +36,6 @@ class Executor {
         int thread_num);
 
     /**
-     * analysis and import model code
-     */
-    int analysisModel();
-
-    /**
      * load image to Mat struct
      *
      * @param ai_buf: camera input image
@@ -54,18 +44,6 @@ class Executor {
      */
     void loadImage(uint8_t* ai_buf, int height, int width);
     void loadImage(std::string image_path, int height, int width);
-
-    /**
-     * copy data to/from ai chip
-     *
-     * @param host_buf: host memory pointor
-     * @param ai_base: the base address of ai chip
-     * @param size: memory size
-     * @param dir: copy direction
-     * @return error code
-     */
-    virtual int copyData(void* host_buf, void* ai_base, uint64_t size,
-        Direction_t dir);
 
     /**
      * Start to inference
@@ -94,8 +72,6 @@ class Executor {
     int thread_num_;
     /// image struct
     RamTensor::sptr image_ptr;
-    /// pointor to graph vector
-    // std::vector<Graph::ptr> graphs_ptr_;
     /// model_name
     std::string model_name_;
 };

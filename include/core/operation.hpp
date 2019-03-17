@@ -43,15 +43,15 @@ class Operation {
     Operation& operator=(const Operation& op);
 
     /**
-     * check output dims
-     */
-    virtual void checkOutputDims() {}
-
-    /**
      * get inputs/outputs
      */
     std::vector<RamTensor::sptr> getInputs();
     std::vector<RamTensor::sptr> getOutputs();
+
+    /**
+     * check output dims
+     */
+    virtual void checkOutputDims() {}
 
     /**
      * inference

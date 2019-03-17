@@ -26,11 +26,8 @@ void vTaskYolov3(void* param)
         // start to inference
         void* exe;
         create_executor(&exe, "yolov3", 320, 240, 1);
-        analysis_model(exe);
         load_image_by_buf(exe, g_ai_buf, 320, 240);
-        copy_data_to_ai(exe, (void *)g_ai_buf, (void*)0x40600000, 320 * 240 * 3);
         compute_model(exe);
-        copy_data_to_host(exe, (void *)g_ai_output, (void*)0x40600000, 3);
 
         // display pic
         dvp_finish_flag = 0;

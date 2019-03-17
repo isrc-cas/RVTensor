@@ -20,8 +20,8 @@ KPUConvOp::sptr KPUConvOp::create() {
 }
 
 KPUConvOp::sptr KPUConvOp::create(ConvParam conv_param, RamTensor::sptr input,
-                                RamTensor::sptr output, RamTensor::sptr weight,
-                                RamTensor::sptr bias) {
+                             RamTensor::sptr output, FlashTensor::sptr weight,
+                             FlashTensor::sptr bias) {
   KPUConvOp::sptr ptr = std::make_shared<KPUConvOp>(conv_param, input,
                                                     output, weight, bias);
   ptr->checkOutputDims();
@@ -33,8 +33,8 @@ inline KPUConvOp::KPUConvOp() : Operation({}, {}),
        weight_(nullptr), bias_(nullptr) {}
 
 inline KPUConvOp::KPUConvOp(ConvParam conv_param, RamTensor::sptr input,
-                            RamTensor::sptr output, RamTensor::sptr weight,
-                            RamTensor::sptr bias)
+                            RamTensor::sptr output, FlashTensor::sptr weight,
+                            FlashTensor::sptr bias)
   : Operation({input}, {output}), param_(conv_param),
   weight_(weight), bias_(bias) {}
 
