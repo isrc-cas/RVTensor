@@ -154,7 +154,7 @@ class RamTensor : public Tensor {
     static sptr create();
     static sptr create(int n, int c, int h, int w, size_t elemsize = 4u);
     static sptr create(int n, int c, int h, int w,
-        void* data, size_t elemsize = 4u);
+                       void* data, size_t elemsize = 4u);
 
     /**
      * Constructor & Deconstructor

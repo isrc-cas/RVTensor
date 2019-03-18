@@ -16,6 +16,8 @@
 #include <devices.h>
 #include "dvp_camera.h"
 
+extern uint8_t* g_ai_buf;
+
 enum _data_for
 {
     DATA_FOR_AI = 0,
@@ -77,8 +79,7 @@ void dvp_init()
 
     dvp_set_output_attributes(file_dvp, DATA_FOR_DISPLAY, VIDEO_FMT_RGB565, (void*)lcd_gram0);
 
-    // shoule be: dvp --> g_ai_buf --> ai_base_addr -> lcd
-    //dvp_set_output_attributes(file_dvp, DATA_FOR_AI, VIDEO_FMT_RGB24_PLANAR, (void*)0x40600000);
+    dvp_set_output_attributes(file_dvp, DATA_FOR_AI, VIDEO_FMT_RGB24_PLANAR, (void*)g_ai_buf);
 
     dvp_set_frame_event_enable(file_dvp, VIDEO_FE_END, DISABLE);
     dvp_set_frame_event_enable(file_dvp, VIDEO_FE_BEGIN, DISABLE);

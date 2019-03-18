@@ -25,15 +25,13 @@ class Executor {
  public:
     using sptr = std::shared_ptr<Executor>;
     static sptr create();
-    static sptr create(std::string model_name, int input_height,
-        int input_width, int thread_num);
+    static sptr create(std::string model_name, int thread_num);
 
     /**
      * Constructor
      */
     Executor();
-    Executor(std::string model_name, int input_height, int input_width,
-        int thread_num);
+    Executor(std::string model_name, int thread_num);
 
     /**
      * load image to Mat struct
@@ -42,8 +40,8 @@ class Executor {
      * @param height: height of input image
      * @param width:  width of imput image
      */
-    void loadImage(uint8_t* ai_buf, int height, int width);
-    void loadImage(std::string image_path, int height, int width);
+    void loadImage(uint8_t* ai_buf, int channel, int height, int width);
+    void loadImage(std::string image_path, int channel, int height, int width);
 
     /**
      * Start to inference

@@ -18,14 +18,12 @@ void graph_cpu_0_execute(RamTensor::sptr input_0, RamTensor::sptr output_0) {
   RamTensor::sptr conv_cpu_0_output_0 = output_0;
 
   FlashTensor::sptr conv_cpu_0_weight_fix8 =
-    FlashTensor::create(1, 20, 30, 1, conv_cpu_0_weight_fix8_data, 1u);
-  FlashTensor::sptr conv_cpu_0_bias_fix8 =
-    FlashTensor::create(1, 20, 1, 1, conv_cpu_0_bias_fix8_data, 1u);
+    FlashTensor::create(16, 3, 3, 3, conv_cpu_0_weight_fix8_data, 1u);
   ConvParam conv_cpu_0_param = {1, 1, 1, 1, 0, 0, true};
   CPUConvOp::sptr conv_cpu_0_fix8 = CPUConvOp::create(conv_cpu_0_param,
         conv_cpu_0_input_0, conv_cpu_0_output_0,
-        conv_cpu_0_weight_fix8, conv_cpu_0_bias_fix8);
-  // conv_cpu_0_fix8->forward_compute();
+        conv_cpu_0_weight_fix8, nullptr);
+  conv_cpu_0_fix8->forward_compute();
 }
 
 // void graph_kpu_0_execute(RamTensor::sptr input_0, RamTensor::sptr output_0) {
@@ -48,7 +46,7 @@ void graph_cpu_0_execute(RamTensor::sptr input_0, RamTensor::sptr output_0) {
 RamTensor::sptr yolov3_model_execute(RamTensor::sptr input_yolov3_0) {
   RamTensor::sptr graph_cpu_0_input0 = input_yolov3_0;
 
-  RamTensor::sptr graph_cpu_0_output0 = RamTensor::create(1, 20, 30, 1, 4u);
+  RamTensor::sptr graph_cpu_0_output0 = RamTensor::create(1, 16, 240, 320, 1u);
   graph_cpu_0_execute(graph_cpu_0_input0, graph_cpu_0_output0);
 
 //  RamTensor::sptr graph_kpu_0_output0 = RamTensor::create(1, 20, 30, 1, 4u);

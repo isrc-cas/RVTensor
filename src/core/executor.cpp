@@ -18,28 +18,32 @@ Executor::sptr Executor::create() {
   return std::make_shared<Executor>();
 }
 
-Executor::sptr Executor::create(std::string model_name, int input_height,
-                                int input_width, int thread_num) {
-  return std::make_shared<Executor>(model_name, input_height,
-                                    input_width, thread_num);
+Executor::sptr Executor::create(std::string model_name, int thread_num) {
+  return std::make_shared<Executor>(model_name, thread_num);
 }
 
 Executor::Executor() {}
 
-Executor::Executor(std::string model_name, int input_height,
-                   int input_width, int thread_num) : thread_num_(thread_num),
-                   model_name_(model_name) {}
+Executor::Executor(std::string model_name, int thread_num)
+                  : thread_num_(thread_num), model_name_(model_name) {}
 
-void Executor::loadImage(uint8_t* ai_buf, int height, int width) {
-  return;
+void Executor::loadImage(uint8_t* ai_buf, int channel, int height, int width) {
+  image_ptr = RamTensor::create(1, channel, height, width,
+                                reinterpret_cast<void*>(ai_buf), 1u);
 }
 
-void Executor::loadImage(std::string image_path, int height, int width) {
-  return;
+void Executor::loadImage(std::string image_path, int channel,
+                                                 int height, int width) {
 }
 
 int Executor::compute() {
-  RamTensor::sptr output = MODEL_EXECUTE(yolov3, image_ptr);
+  RamTensor::sptr output = nullptr;
+  if (model_name_.compare("yolov3") == 0) {
+      output = MODEL_EXECUTE(yolov3, image_ptr);
+  } else {
+    return -1;
+  }
+
   return 0;
 }
 
