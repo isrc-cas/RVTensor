@@ -25,5 +25,5 @@ extern volatile uint8_t gram_mux;
 extern uint32_t lcd_gram0[38400];
 extern uint32_t lcd_gram1[38400];
 
-void dvp_init();
+void dvp_init(void* ai_buf);
 #endif

@@ -20,6 +20,8 @@ extern void load_image_by_path(void* ptr, char* image_path, int channel,
 
 extern void compute_model(void* ptr);
 
+extern void copy_output_buf(void* ptr, void* data_ptr, size_t size);
+
 extern void inference_result(void* ptr,
                       void* result_buf,
                       uint64_t size,

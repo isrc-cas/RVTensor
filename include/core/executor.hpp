@@ -49,6 +49,11 @@ class Executor {
     int compute();
 
     /**
+     * Copy Output data to application
+     */
+    void copyOutputData(void* data_ptr, size_t size);
+
+    /**
      * analysis inference result
      *
      * @param result_buf: result of inference
@@ -70,6 +75,7 @@ class Executor {
     int thread_num_;
     /// image struct
     RamTensor::sptr image_ptr;
+    RamTensor::sptr output_ptr;
     /// model_name
     std::string model_name_;
 };

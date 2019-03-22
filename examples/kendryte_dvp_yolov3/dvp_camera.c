@@ -66,7 +66,7 @@ void on_irq_dvp(dvp_frame_event_t event, void* userdata)
     }
 }
 
-void dvp_init()
+void dvp_init(void* ai_buf)
 {
     file_dvp = io_open("/dev/dvp0");
     configASSERT(file_dvp);
@@ -79,7 +79,7 @@ void dvp_init()
 
     dvp_set_output_attributes(file_dvp, DATA_FOR_DISPLAY, VIDEO_FMT_RGB565, (void*)lcd_gram0);
 
-    dvp_set_output_attributes(file_dvp, DATA_FOR_AI, VIDEO_FMT_RGB24_PLANAR, (void*)g_ai_buf);
+    dvp_set_output_attributes(file_dvp, DATA_FOR_AI, VIDEO_FMT_RGB24_PLANAR, (void*)ai_buf);
 
     dvp_set_frame_event_enable(file_dvp, VIDEO_FE_END, DISABLE);
     dvp_set_frame_event_enable(file_dvp, VIDEO_FE_BEGIN, DISABLE);

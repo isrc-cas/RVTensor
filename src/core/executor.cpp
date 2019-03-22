@@ -37,14 +37,31 @@ void Executor::loadImage(std::string image_path, int channel,
 }
 
 int Executor::compute() {
-  RamTensor::sptr output = nullptr;
   if (model_name_.compare("yolov3") == 0) {
-      output = MODEL_EXECUTE(yolov3, image_ptr);
+      // fill image_ptr with test data
+      uint8_t v = 0x01;
+      image_ptr->fill(v);
+      output_ptr = MODEL_EXECUTE(yolov3, image_ptr);
   } else {
     return -1;
   }
 
   return 0;
+}
+
+void Executor::copyOutputData(void* data_ptr, size_t size) {
+  if (output_ptr->trueSize() != size) {
+    throw std::runtime_error("copyOutputData data size is wrong!");
+  }
+  size_t surface_size = size / output_ptr->channel;
+  for (int c = 0; c < output_ptr->channel; c++) {
+    void* src_ptr = reinterpret_cast<void*>(
+                    reinterpret_cast<uint8_t*>(output_ptr->data_ptr) +
+                    c * output_ptr->cstep * output_ptr->element_size);
+    void* dst_ptr = reinterpret_cast<void*>(
+                    reinterpret_cast<uint8_t*>(data_ptr) + c * surface_size);
+    memcpy(dst_ptr, src_ptr, surface_size);
+  }
 }
 
 int Executor::inferenceResult(void* result_buf, uint64_t size,

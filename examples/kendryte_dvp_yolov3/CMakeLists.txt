@@ -13,12 +13,21 @@ include_directories(${CMAKE_CURRENT_LIST_DIR})
 link_directories(${SDK_LIBS_DIR}/bsp)
 link_directories(${SDK_LIBS_DIR}/freertos)
 link_directories(${SDK_LIBS_DIR}/drivers)
+link_directories(${SDK_LIBS_DIR}/posix)
 link_directories(${SDK_LIBS_DIR}/hal)
+link_directories(${THIRD_PARTY_LIBS_DIR}/fatfs)
+link_directories(${THIRD_PARTY_LIBS_DIR}/lwip)
 
 add_executable(${KENDRYTE_YOLOV3_NAME} ${KENDRYTE_YOLOV3_SRCS})
 target_link_libraries(${KENDRYTE_YOLOV3_NAME} rvos
                 -Wl,--start-group
-                m freertos atomic bsp c stdc++ drivers hal
+                m freertos atomic bsp c stdc++ drivers posix hal fatfs lwipcore
+                -T "${SDK_DIR}/lds/kendryte.ld"
                 -Wl,--end-group
                 )
 set_target_properties(${KENDRYTE_YOLOV3_NAME} PROPERTIES LINKER_LANGUAGE C)
+
+add_custom_command(TARGET ${KENDRYTE_YOLOV3_NAME} POST_BUILD
+         COMMAND ${CMAKE_OBJCOPY} --output-format=binary ${KENDRYTE_YOLOV3_NAME} ${KENDRYTE_YOLOV3_NAME}.bin
+         DEPENDS ${KENDRYTE_YOLOV3_NAME}
+         COMMENT "Generating .bin file ...")

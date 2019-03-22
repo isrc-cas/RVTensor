@@ -55,15 +55,19 @@ inline Tensor::~Tensor() {
 }
 
 inline bool Tensor::empty() const {
-  return data_ptr == nullptr || total() == 0;
+  return data_ptr == nullptr || totalSize() == 0;
 }
 
-inline size_t Tensor::total() const {
-  return cstep * channel * n_batch;
+size_t Tensor::totalSize() const {
+  return cstep * channel * n_batch * element_size;
 }
 
-inline size_t Tensor::count() const {
+size_t Tensor::count() const {
   return n_batch * channel * height * width;
+}
+
+size_t Tensor::trueSize() const {
+  return n_batch * channel * height * width * element_size;
 }
 
 inline void Tensor::setQuantizeParams(
@@ -113,7 +117,7 @@ inline FlashTensor::~FlashTensor() {
 }
 
 inline void FlashTensor::bindData(void* data, size_t size) {
-  if (size == total() && data_ptr == nullptr)
+  if (size == trueSize() && data_ptr == nullptr)
     data_ptr = data;
   else
     throw std::runtime_error("FlashTensor duplicate copy of data_ptr!");
@@ -175,9 +179,9 @@ inline RamTensor::RamTensor(int n, int c, int h, int w, size_t elemsize)
     cstep = (c <= 1) ? width * height :
          alignSize(width * height * element_size, MALLOC_ALIGN) / element_size;
 
-    if (total() > 0) {
-      size_t totalsize = alignSize(total() * elemsize, 4);
-      data_ptr = tensorDataMalloc(totalsize);
+    if (totalSize() > 0) {
+      size_t total_size = alignSize(totalSize() * elemsize, 4);
+      data_ptr = tensorDataMalloc(total_size);
     }
   }
 
@@ -190,13 +194,26 @@ inline RamTensor::~RamTensor() {
 }
 
 template <typename T>
-  inline void RamTensor::fill(T _v) {
-    int size = total();
-    T* ptr = reinterpret_cast<T*>(data_ptr);
-    for (int i = 0; i < size; i++) {
-      ptr[i] = _v;
+void RamTensor::fill(T _v) {
+  for (int c = 0; c < channel; c++) {
+    T* dst_ptr = reinterpret_cast<T*>(
+                 reinterpret_cast<uint8_t*>(data_ptr) +
+                 c * cstep * element_size);
+    for (int i = 0; i < height * width; i++) {
+      dst_ptr[i] = _v;
     }
   }
+}
+
+void RamTensor::fill(uint8_t v) {
+  for (int c = 0; c < channel; c++) {
+    uint8_t* dst_ptr = reinterpret_cast<uint8_t*>(data_ptr) +
+                       c * cstep * element_size;
+    for (int i = 0; i < height * width; i++) {
+      dst_ptr[i] = v;
+    }
+  }
+}
 
 inline RamTensor::sptr RamTensor::clone() const {
   if (empty())
@@ -205,8 +222,8 @@ inline RamTensor::sptr RamTensor::clone() const {
   RamTensor::sptr ts = std::make_shared<RamTensor>(
       n_batch, width, height, channel, element_size);
 
-  if (total() > 0) {
-    memcpy(ts->data_ptr, data_ptr, total() * element_size);
+  if (totalSize() > 0) {
+    memcpy(ts->data_ptr, data_ptr, totalSize());
   }
 
   return ts;
@@ -230,7 +247,7 @@ void RamTensor::tensorDataFree() {
 }
 
 void RamTensor::writeData(void* data, size_t size) {
-  if (size == (total() * element_size) && data_ptr != nullptr)
+  if (size == trueSize() && data_ptr != nullptr)
     memcpy(data_ptr, data, size);
   else
     throw std::runtime_error("RamTensor error in write data!");

@@ -31,6 +31,11 @@ void compute_model(void* ptr) {
   (*(reinterpret_cast<rvos::Executor::sptr*>(ptr)))->compute();
 }
 
+void copy_output_buf(void* ptr, void* data_ptr, size_t size) {
+  (*(reinterpret_cast<rvos::Executor::sptr*>(ptr)))->copyOutputData(
+                                                           data_ptr, size);
+}
+
 void inference_result(void* ptr, void* result_buf, uint64_t size, void* call) {
   (*(reinterpret_cast<rvos::Executor::sptr*>(ptr)))->inferenceResult(
       result_buf, size, (rvos::callback_draw_box)call);

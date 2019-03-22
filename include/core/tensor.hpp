@@ -75,7 +75,14 @@ class Tensor {
      * Number of the elements in Tensor
      */
     size_t count() const;
-    size_t total() const;
+    /**
+     * True size of the elements in Tensor
+     */
+    size_t trueSize() const;
+    /**
+     * Total size of elements in Tensor
+     */
+    size_t totalSize() const;
 
     /**
      * pointer to the data
@@ -168,7 +175,10 @@ class RamTensor : public Tensor {
     /**
      * set tensor data with v
      */
-    template <typename T> void fill(T v);
+    template <typename T>
+    void fill(T v);
+    void fill(uint8_t v);
+
     /**
      * deep copy of this Tensor
      */

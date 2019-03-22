@@ -26,6 +26,9 @@ extern "C"
 void compute_model(void* ptr);
 
 extern "C"
+void copy_output_buf(void* ptr, void* data_ptr, size_t size);
+
+extern "C"
 void inference_result(void* ptr,
                       void* result_buf,
                       uint64_t size,
