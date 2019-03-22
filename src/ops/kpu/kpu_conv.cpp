@@ -13,7 +13,7 @@
 #include "include/ops/kpu/kpu_conv.hpp"
 #include "include/ops/kpu/kpu_extern.h"
 
-namespace rvos {
+namespace RVTensor {
 
 KPUConvOp::sptr KPUConvOp::create() {
   return std::make_shared<KPUConvOp>();
@@ -418,4 +418,4 @@ inline void KPUConvOp::forward_compute() {
   }
 }
 
-}  // namespace rvos
+}  // namespace RVTensor

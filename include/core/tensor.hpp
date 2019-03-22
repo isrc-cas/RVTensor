@@ -11,7 +11,7 @@
 #include <memory>
 #include <string.h> //NOLINT
 
-namespace rvos {
+namespace RVTensor {
 
 /**
  * Aligns a buffer size to the specified number of bytes
@@ -35,7 +35,7 @@ template<typename _Tp> static inline _Tp* alignPtr(
 }
 
 /**
- * RVOS data descriptor
+ * RVTensor data descriptor
  *
  *                 Tensor
  *                   +
@@ -206,6 +206,6 @@ class RamTensor : public Tensor {
     void tensorDataFree();
 };
 
-}  // namespace rvos
+}  // namespace RVTensor
 
 #endif  // INCLUDE_CORE_TENSOR_HPP_

@@ -12,10 +12,10 @@
 #include <memory>
 #include "include/core/tensor.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 /**
- * RVOS operation descriptor
+ * RVTensor operation descriptor
  *
  *               Operation
  *                   +
@@ -63,6 +63,6 @@ class Operation {
     std::vector<RamTensor::sptr> outputs_;
 };
 
-}  // namespace rvos
+}  // namespace RVTensor
 
 #endif  // INCLUDE_CORE_OPERATION_HPP_

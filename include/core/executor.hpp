@@ -13,7 +13,7 @@
 #include <vector>
 #include "include/core/tensor.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 typedef void (*callback_draw_box)(uint32_t x1, uint32_t y1, uint32_t x2,
     uint32_t y2, uint32_t classes, float prob);
@@ -80,6 +80,6 @@ class Executor {
     std::string model_name_;
 };
 
-}  // namespace rvos
+}  // namespace RVTensor
 
 #endif  // INCLUDE_CORE_EXECUTOR_HPP_

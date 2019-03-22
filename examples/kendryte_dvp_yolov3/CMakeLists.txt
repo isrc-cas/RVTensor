@@ -19,7 +19,7 @@ link_directories(${THIRD_PARTY_LIBS_DIR}/fatfs)
 link_directories(${THIRD_PARTY_LIBS_DIR}/lwip)
 
 add_executable(${KENDRYTE_YOLOV3_NAME} ${KENDRYTE_YOLOV3_SRCS})
-target_link_libraries(${KENDRYTE_YOLOV3_NAME} rvos
+target_link_libraries(${KENDRYTE_YOLOV3_NAME} RVTensor
                 -Wl,--start-group
                 m freertos atomic bsp c stdc++ drivers posix hal fatfs lwipcore
                 -T "${SDK_DIR}/lds/kendryte.ld"

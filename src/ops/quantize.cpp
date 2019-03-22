@@ -10,7 +10,7 @@
 #include "include/ops/quantize.hpp"
 #include "include/core/tensor.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 QuantizeOp::sptr QuantizeOp::create() {
   return std::make_shared<QuantizeOp>();
@@ -111,4 +111,4 @@ inline void QuantizeOp::forward_compute() {
   }
 }
 
-}  // namespace rvos
+}  // namespace RVTensor

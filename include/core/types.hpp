@@ -8,7 +8,7 @@
 #ifndef INCLUDE_CORE_TYPES_HPP_
 #define INCLUDE_CORE_TYPES_HPP_
 
-namespace rvos {
+namespace RVTensor {
 
 struct ConvParam {
   /// stride
@@ -44,6 +44,6 @@ struct QuantizeParam {
   QuantizeStrategy quant_type;
 };
 
-}  // namespace rvos
+}  // namespace RVTensor
 
 #endif  // INCLUDE_CORE_TYPES_HPP_

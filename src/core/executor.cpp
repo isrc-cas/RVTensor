@@ -9,7 +9,7 @@
 #include "include/core/tensor.hpp"
 #include "compiled/model_execute.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 #define MODEL_EXECUTE(model_name, ...) \
   model_name##_model_execute(__VA_ARGS__)
@@ -71,4 +71,4 @@ int Executor::inferenceResult(void* result_buf, uint64_t size,
 
 Executor::~Executor() {}
 
-}  // namespace rvos
+}  // namespace RVTensor

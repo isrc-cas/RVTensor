@@ -7,7 +7,7 @@
 
 #include "include/ops/conv.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 CPUConvOp::sptr CPUConvOp::create() {
   return std::make_shared<CPUConvOp>();
@@ -160,4 +160,4 @@ inline void CPUConvOp::forward_compute() {
   }
 }
 
-}  // namespace rvos
+}  // namespace RVTensor

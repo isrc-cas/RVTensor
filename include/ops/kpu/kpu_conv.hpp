@@ -15,7 +15,7 @@
 #include "include/ops/conv.hpp"
 #include "include/ops/kpu/kpu.h"
 
-namespace rvos {
+namespace RVTensor {
 
 class KPUConvOp: public Operation {
  public:
@@ -60,6 +60,6 @@ class KPUConvOp: public Operation {
     kpu_activate_table_t kpu_act_table __attribute__((aligned(256)));
 };
 
-}  // namespace rvos
+}  // namespace RVTensor
 
 #endif  // INCLUDE_OPS_KPU_KPU_CONV_HPP_

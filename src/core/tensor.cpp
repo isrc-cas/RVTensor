@@ -12,7 +12,7 @@
 #include <memory>
 #include "include/core/tensor.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 ////////////////////// Tensor ////////////////////////////////
 Tensor::sptr Tensor::create() {
@@ -287,4 +287,4 @@ template <typename T>
     return reinterpret_cast<T*>(data_ptr);
   }
 
-}  // namespace rvos
+}  // namespace RVTensor

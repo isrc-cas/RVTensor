@@ -14,7 +14,7 @@
 #include "include/core/operation.hpp"
 #include "include/core/types.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 class QuantizeOp: public Operation {
  public:
@@ -47,6 +47,6 @@ class QuantizeOp: public Operation {
     QuantizeParam param_;
 };
 
-}  // namespace rvos
+}  // namespace RVTensor
 
 #endif  // INCLUDE_OPS_QUANTIZE_HPP_

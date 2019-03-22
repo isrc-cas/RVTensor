@@ -15,10 +15,10 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-project(rvos)
+project(RVTensor)
 
-option(RVOS_KENDRYTE "kendryte support" ON)
-option(RVOS_GAP8     "gap8 support" OFF)
+option(RVTENSOR_KENDRYTE "kendryte support" ON)
+option(RVTENSOR_GAP8     "gap8 support" OFF)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})

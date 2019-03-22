@@ -1,5 +1,5 @@
 
-FILE(GLOB_RECURSE RVOS_SRCS
+FILE(GLOB_RECURSE RVTENSOR_SRCS
     "${CMAKE_CURRENT_LIST_DIR}/*/*.h"
     "${CMAKE_CURRENT_LIST_DIR}/*/*.hpp"
     "${CMAKE_CURRENT_LIST_DIR}/*/*.cpp"
@@ -11,4 +11,4 @@ FILE(GLOB_RECURSE RVOS_SRCS
     "${CMAKE_CURRENT_LIST_DIR}/../compiled/*.cpp"
     )
 
-add_library(rvos STATIC ${RVOS_SRCS})
+  add_library(RVTensor STATIC ${RVTENSOR_SRCS})

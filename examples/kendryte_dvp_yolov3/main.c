@@ -24,7 +24,7 @@ void vTaskYolov3(void* param)
     {
         while (dvp_finish_flag == 0)
             ;
-        start to inference
+        // start to inference
         void* exe;
         create_executor(&exe, "yolov3", 1);
         load_image_by_buf(exe, g_ai_buf, 3, 240, 320);

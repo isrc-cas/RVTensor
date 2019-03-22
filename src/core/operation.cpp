@@ -7,7 +7,7 @@
 
 #include "include/core/operation.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 Operation::sptr Operation::create() {
     return std::make_shared<Operation>();
@@ -34,4 +34,4 @@ std::vector<RamTensor::sptr> Operation::getOutputs() {
     return outputs_;
 }
 
-}  // namespace rvos
+}  // namespace RVTensor

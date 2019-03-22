@@ -14,7 +14,7 @@
 #include "include/core/operation.hpp"
 #include "include/core/types.hpp"
 
-namespace rvos {
+namespace RVTensor {
 
 class CPUConvOp: public Operation {
  public:
@@ -57,6 +57,6 @@ class CPUConvOp: public Operation {
     FlashTensor::sptr bias_;
 };
 
-}  // namespace rvos
+}  // namespace RVTensor
 
 #endif  // INCLUDE_OPS_CONV_HPP_
