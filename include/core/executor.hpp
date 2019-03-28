@@ -9,7 +9,6 @@
 #define INCLUDE_CORE_EXECUTOR_HPP_
 
 #include <string>
-#include <memory>
 #include <vector>
 #include "include/core/tensor.hpp"
 
@@ -41,7 +40,7 @@ class Executor {
      * @param width:  width of imput image
      */
     void loadImage(uint8_t* ai_buf, int channel, int height, int width);
-    void loadImage(std::string image_path, int channel, int height, int width);
+// void loadImage(std::string image_path, int channel, int height, int width);
 
     /**
      * Start to inference

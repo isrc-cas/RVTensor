@@ -204,6 +204,10 @@ class RamTensor : public Tensor {
      */
     void* tensorDataMalloc(size_t size);
     void tensorDataFree();
+    /**
+     * Is data_ptr malloced in Tensor/RamTensor
+     */
+    bool is_malloced;
 };
 
 }  // namespace RVTensor

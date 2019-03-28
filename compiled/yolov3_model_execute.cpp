@@ -46,7 +46,7 @@ void graph_cpu_0_execute(RamTensor::sptr input_0, RamTensor::sptr output_0) {
 RamTensor::sptr yolov3_model_execute(RamTensor::sptr input_yolov3_0) {
   RamTensor::sptr graph_cpu_0_input0 = input_yolov3_0;
 
-  RamTensor::sptr graph_cpu_0_output0 = RamTensor::create(1, 16, 240, 320, 1u);
+  RamTensor::sptr graph_cpu_0_output0 = RamTensor::create(0, 16, 240, 320, 1u);
   graph_cpu_0_execute(graph_cpu_0_input0, graph_cpu_0_output0);
 
 //  RamTensor::sptr graph_kpu_0_output0 = RamTensor::create(1, 20, 30, 1, 4u);

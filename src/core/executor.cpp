@@ -25,16 +25,17 @@ Executor::sptr Executor::create(std::string model_name, int thread_num) {
 Executor::Executor() {}
 
 Executor::Executor(std::string model_name, int thread_num)
-                  : thread_num_(thread_num), model_name_(model_name) {}
+                  : thread_num_(thread_num), model_name_(model_name),
+                  image_ptr(nullptr), output_ptr(nullptr) {}
 
 void Executor::loadImage(uint8_t* ai_buf, int channel, int height, int width) {
-  image_ptr = RamTensor::create(1, channel, height, width,
+  image_ptr = RamTensor::create(0, channel, height, width,
                                 reinterpret_cast<void*>(ai_buf), 1u);
 }
 
-void Executor::loadImage(std::string image_path, int channel,
-                                                 int height, int width) {
-}
+// void Executor::loadImage(std::string image_path, int channel,
+//                                                  int height, int width) {
+// }
 
 int Executor::compute() {
   if (model_name_.compare("yolov3") == 0) {

@@ -43,7 +43,7 @@ inline Tensor::Tensor(int n, int c, int h, int w, void* data, size_t elemsize)
                                                   height(h), channel(c) {
     cstep = (channel <= 1) ? width * height :
          alignSize(width * height * element_size, MALLOC_ALIGN) / element_size;
-  }
+}
 
 inline Tensor::~Tensor() {
   element_size = 0;
@@ -171,11 +171,10 @@ RamTensor::sptr RamTensor::create(int n, int c, int h, int w,
   return std::make_shared<RamTensor>(n, c, h, w, data, elemsize);
 }
 
-
 inline RamTensor::RamTensor() : Tensor() {}
 
 inline RamTensor::RamTensor(int n, int c, int h, int w, size_t elemsize)
-  : Tensor(n, c, h, w, elemsize) {
+  : Tensor(n, c, h, w, elemsize), is_malloced(true) {
     cstep = (c <= 1) ? width * height :
          alignSize(width * height * element_size, MALLOC_ALIGN) / element_size;
 
@@ -187,10 +186,11 @@ inline RamTensor::RamTensor(int n, int c, int h, int w, size_t elemsize)
 
 inline RamTensor::RamTensor(int n, int c, int h, int w,
     void* data, size_t elemsize)
-  : Tensor(n, c, h, w, data, elemsize) {}
+  : Tensor(n, c, h, w, data, elemsize), is_malloced(false) {}
 
 inline RamTensor::~RamTensor() {
-  tensorDataFree();
+  if (is_malloced)
+    tensorDataFree();
 }
 
 template <typename T>
