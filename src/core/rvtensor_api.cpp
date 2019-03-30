@@ -5,20 +5,23 @@
  *
  */
 
+#include <memory>
 #include "include/core/executor.hpp"
 #include "include/core/rvtensor_api.h"
+
+RVTensor::Executor::sptr sp = nullptr;
 
 void create_executor(void** pptr, char* model_name, int thread_num) {
   if (pptr == NULL)
     exit(0);
-  RVTensor::Executor::sptr sp = RVTensor::Executor::create(model_name,
-                                   thread_num);
+  std::string st = model_name;
+  sp = RVTensor::Executor::create(st, thread_num);
   *pptr = reinterpret_cast<void*>(&sp);
 }
 
 void load_image_by_buf(void* ptr, uint8_t* ai_buf,
                        int channel, int height, int width) {
-  (*(reinterpret_cast<RVTensor::Executor::sptr*>(&ptr)))->loadImage(
+  (*(reinterpret_cast<RVTensor::Executor::sptr*>(ptr)))->loadImage(
                                         ai_buf, channel, height, width);
 }
 
@@ -29,15 +32,19 @@ void load_image_by_buf(void* ptr, uint8_t* ai_buf,
 // }
 
 void compute_model(void* ptr) {
-  (*(reinterpret_cast<RVTensor::Executor::sptr*>(ptr)))->compute();
+  (*(static_cast<RVTensor::Executor::sptr*>(ptr)))->compute();
 }
 
 void copy_output_buf(void* ptr, void* data_ptr, size_t size) {
-  (*(reinterpret_cast<RVTensor::Executor::sptr*>(ptr)))->copyOutputData(
+  (*(static_cast<RVTensor::Executor::sptr*>(ptr)))->copyOutputData(
                                                            data_ptr, size);
 }
 
 void inference_result(void* ptr, void* result_buf, uint64_t size, void* call) {
-  (*(reinterpret_cast<RVTensor::Executor::sptr*>(ptr)))->inferenceResult(
+  (*(static_cast<RVTensor::Executor::sptr*>(ptr)))->inferenceResult(
       result_buf, size, (RVTensor::callback_draw_box)call);
+}
+
+void destroy_executor(void* ptr) {
+  sp.reset();
 }

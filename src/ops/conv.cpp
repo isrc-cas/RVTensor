@@ -69,10 +69,11 @@ inline void CPUConvOp::forward_compute() {
   auto input_tensor = getInputs()[0];
   auto output_tensor = getOutputs()[0];
 
-  float* input = reinterpret_cast<float *>(input_tensor->data_ptr);
-  float* output = reinterpret_cast<float *>(output_tensor->data_ptr);
-  float* weight = reinterpret_cast<float *>(weight_->data_ptr);
-  float* bias = bias_ ? reinterpret_cast<float *>(bias_->data_ptr) : nullptr;
+  uint8_t* input = reinterpret_cast<uint8_t *>(input_tensor->data_ptr);
+  uint8_t* output = reinterpret_cast<uint8_t *>(output_tensor->data_ptr);
+  uint8_t* weight = reinterpret_cast<uint8_t *>(weight_->data_ptr);
+  uint8_t* bias = bias_ ?
+                    reinterpret_cast<uint8_t *>(bias_->data_ptr) : nullptr;
 
   int ni = input_tensor->n_batch;
   int ci = input_tensor->channel;
@@ -92,13 +93,13 @@ inline void CPUConvOp::forward_compute() {
   int ph = param_.ph;
   int pw = param_.pw;
 
-  float* temp_weight = nullptr;
+  uint8_t* temp_weight = nullptr;
   int x = 0, y = 0;
   if (dh > 1 || dw > 1) {
     kh = (kh - 1) * dh + 1;
     kw = (kw - 1) * dw + 1;
-    temp_weight = reinterpret_cast<float *>(
-                   malloc(sizeof(float) * kw * kh * ci * co));
+    temp_weight = reinterpret_cast<uint8_t *>(
+                   malloc(sizeof(uint8_t) * kw * kh * ci * co));
     x = -1;
     y = -1;
     for (int coi = 0; coi < co; coi++) {
@@ -117,7 +118,7 @@ inline void CPUConvOp::forward_compute() {
       }
     }
   } else {
-    temp_weight[x] = weight[y];
+    temp_weight = weight;
   }
 
   for (int n = 0; n < ni; n++) {

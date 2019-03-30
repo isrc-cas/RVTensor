@@ -34,4 +34,6 @@ void inference_result(void* ptr,
                       uint64_t size,
                       void* call);
 
+extern "C"
+void destroy_executor(void* pptr);
 #endif  // INCLUDE_CORE_RVTRNSOR_API_H_

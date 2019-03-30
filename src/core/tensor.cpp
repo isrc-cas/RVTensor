@@ -209,9 +209,7 @@ void RamTensor::fill(uint8_t v) {
   for (int c = 0; c < channel; c++) {
     uint8_t* dst_ptr = reinterpret_cast<uint8_t*>(data_ptr) +
                        c * cstep * element_size;
-    for (int i = 0; i < height * width; i++) {
-      dst_ptr[i] = v;
-    }
+    memset(dst_ptr, v, height * width);
   }
 }
 

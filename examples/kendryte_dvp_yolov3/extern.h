@@ -26,4 +26,6 @@ extern void inference_result(void* ptr,
                       void* result_buf,
                       uint64_t size,
                       void* call);
+
+void destroy_executor(void* ptr);
 #endif

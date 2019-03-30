@@ -25,19 +25,21 @@ void vTaskYolov3(void* param)
         while (dvp_finish_flag == 0)
             ;
         // start to inference
-        void* exe;
+        void* exe = NULL;
         create_executor(&exe, "yolov3", 1);
         load_image_by_buf(exe, g_ai_buf, 3, 240, 320);
-        // compute_model(exe);
+        compute_model(exe);
         // copy_output_buf(exe, (void*)g_ai_outbuf, 16 * 240 * 320);
-        // for (int c = 0; c < 3; c++) {
-        //   printk("\n");
-        //   for (int h = 100; h < 105; h++) {
-        //     for (int w = 150; w < 155; w++) {
-        //       printk("%02x ", g_ai_buf[c * 240 * 320 + h * 320 + w]);
+        // if (lable) {
+        //   for (int c = 0; c < 16; c++) {
+        //     for (int h = 0; h < 240; h++) {
+        //       for (int w = 0; w < 320; w++) {
+        //         printk("%02x ", g_ai_outbuf[c * 240 * 320 + h * 320 + w]);
+        //       }
         //     }
         //   }
         // }
+        destroy_executor(exe);
 
         // break;
         // display pic

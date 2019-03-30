@@ -29,7 +29,7 @@ Executor::Executor(std::string model_name, int thread_num)
                   image_ptr(nullptr), output_ptr(nullptr) {}
 
 void Executor::loadImage(uint8_t* ai_buf, int channel, int height, int width) {
-  image_ptr = RamTensor::create(0, channel, height, width,
+  image_ptr = RamTensor::create(1, channel, height, width,
                                 reinterpret_cast<void*>(ai_buf), 1u);
 }
 
@@ -39,14 +39,14 @@ void Executor::loadImage(uint8_t* ai_buf, int channel, int height, int width) {
 
 int Executor::compute() {
   if (model_name_.compare("yolov3") == 0) {
-      // fill image_ptr with test data
-      uint8_t v = 0x01;
-      image_ptr->fill(v);
-      output_ptr = MODEL_EXECUTE(yolov3, image_ptr);
+    // fill image_ptr with test data
+    // RamTensor::sptr test_ptr = RamTensor::create(1, 3, 240, 320, 1u);
+    // uint8_t v = 1;
+    // test_ptr->fill(v);
+    output_ptr = MODEL_EXECUTE(yolov3, test_ptr);
   } else {
     return -1;
   }
-
   return 0;
 }
 
