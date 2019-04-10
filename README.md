@@ -13,3 +13,8 @@ Todo with priorities
 - Fuchsia porting
 -
 -
+
+# compile
+## build kendryte
+1. specify toolchain_dir and sdk_dir path
+2. execute ```./build_kendryte.sh```
