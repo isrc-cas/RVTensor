@@ -1,0 +1,45 @@
+# requiring the environment of NodeJS 10
+image: ubuntu:16.04
+
+before_script:
+  ##
+  ## Install ssh-agent if not already installed, it is required by Docker.
+  ## (change apt-get to yum if you use an RPM-based image)
+  ##
+  - rm /etc/apt/sources.list
+  - echo deb http://isrc.iscas.ac.cn/mirror/ubuntu/ xenial main restricted universe multiverse > /etc/apt/sources.list
+  - echo deb http://isrc.iscas.ac.cn/mirror/ubuntu/ xenial-updates main restricted universe multiverse >> /etc/apt/sources.list
+  - echo deb http://isrc.iscas.ac.cn/mirror/ubuntu/ xenial-security main restricted universe multiverse >> /etc/apt/sources.list
+  - apt-get update -y
+  - apt-get install make cmake wget unzip -y
+
+build:
+  stage: build
+  tags:
+    - xenial
+  script:
+    - mkdir build
+    - cd build
+    - wget http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-freertos-sdk.zip
+    - wget http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-toolchain.zip
+    - unzip http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-freertos-sdk.zip
+    - unzip http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-toolchain.zip
+    - cd ..
+    ##### BUILD KENDRYTE
+    - if [ -d "build-kendryte-freertos" ];then
+    -   rm -fr build-kendryte-freertos
+    - fi
+    - toolchain_dir="$PWD/build/opt/kendryte-toolchain"
+    - sdk_dir="$PWD/build/kendryte-freertos-sdk"
+    - mkdir -p build-kendryte-freertos
+    - pushd build-kendryte-freertos
+    - cmake -DCMAKE_TOOLCHAIN_FILE=../environments/kendryte.toolchain.cmake -DTOOLCHAIN_DIR=$toolchain_dir -DSDK_DIR=$sdk_dir ..
+    - make VERBOSE=1
+    - popd
+
+  artifacts:
+    paths:
+    - build-kendryte-freertos
+    expire_in: 1 week
+  only:
+    - imudown
