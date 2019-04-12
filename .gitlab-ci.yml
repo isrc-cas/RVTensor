@@ -1,7 +1,5 @@
 image: ubuntu:16.04
 
-stage:
-  - build
 
 before_script:
   - rm /etc/apt/sources.list
@@ -11,9 +9,8 @@ before_script:
   - apt-get update -y
   - apt-get install make cmake wget unzip -y
 
-kendryte:
-  stage:
-    - build
+test:
+  stage: test
   tags:
     - xenial
   script:
@@ -40,4 +37,4 @@ kendryte:
     - build-kendryte-freertos
     expire_in: 1 week
   only:
-    - imudown
+    - master
