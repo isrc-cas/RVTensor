@@ -18,8 +18,8 @@ test:
     - cd build
     - wget http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-freertos-sdk.zip
     - wget http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-toolchain.zip
-    - unzip http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-freertos-sdk.zip
-    - unzip http://192.168.8.12/dl/tools/toolchain_RVTensor/kendryte-toolchain.zip
+    - unzip kendryte-freertos-sdk.zip
+    - unzip kendryte-toolchain.zip
     - cd ..
     ##### BUILD KENDRYTE
     - if [ -d "build-kendryte-freertos" ];then
