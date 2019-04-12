@@ -40,9 +40,9 @@ void Executor::loadImage(uint8_t* ai_buf, int channel, int height, int width) {
 int Executor::compute() {
   if (model_name_.compare("yolov3") == 0) {
     // fill image_ptr with test data
-    // RamTensor::sptr test_ptr = RamTensor::create(1, 3, 240, 320, 1u);
-    // uint8_t v = 1;
-    // test_ptr->fill(v);
+    RamTensor::sptr test_ptr = RamTensor::create(1, 3, 240, 320, 1u);
+    uint8_t v = 1;
+    test_ptr->fill(v);
     output_ptr = MODEL_EXECUTE(yolov3, test_ptr);
   } else {
     return -1;
