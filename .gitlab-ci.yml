@@ -1,11 +1,9 @@
-# requiring the environment of NodeJS 10
 image: ubuntu:16.04
 
+stage:
+  - build
+
 before_script:
-  ##
-  ## Install ssh-agent if not already installed, it is required by Docker.
-  ## (change apt-get to yum if you use an RPM-based image)
-  ##
   - rm /etc/apt/sources.list
   - echo deb http://isrc.iscas.ac.cn/mirror/ubuntu/ xenial main restricted universe multiverse > /etc/apt/sources.list
   - echo deb http://isrc.iscas.ac.cn/mirror/ubuntu/ xenial-updates main restricted universe multiverse >> /etc/apt/sources.list
@@ -13,8 +11,9 @@ before_script:
   - apt-get update -y
   - apt-get install make cmake wget unzip -y
 
-build:
-  stage: build
+kendryte:
+  stage:
+    - build
   tags:
     - xenial
   script:
@@ -36,7 +35,6 @@ build:
     - cmake -DCMAKE_TOOLCHAIN_FILE=../environments/kendryte.toolchain.cmake -DTOOLCHAIN_DIR=$toolchain_dir -DSDK_DIR=$sdk_dir ..
     - make VERBOSE=1
     - popd
-
   artifacts:
     paths:
     - build-kendryte-freertos
