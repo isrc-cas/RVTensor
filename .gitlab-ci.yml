@@ -36,5 +36,3 @@ test:
     paths:
     - build-kendryte-freertos
     expire_in: 1 week
-  only:
-    - master
